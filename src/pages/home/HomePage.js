@@ -2,14 +2,13 @@ import React, {Component} from 'react';
 import {createAppContainer} from 'react-navigation';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
 import {View, Text} from 'react-native';
-import Popular from './PopularPage';
+import Popular from './index';
 // import Trending from '../tabPage/Trending';
-import Favorite from './FavoritePage';
-// import Me from '../tabPage/Me';
-
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import community from './community';
+import Detail from './community/DetailPage';
+import My from '../my';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Entypo from 'react-native-vector-icons/Entypo';
+import {createStackNavigator} from 'react-navigation-stack';
 
 class Page extends Component {
   render() {
@@ -20,7 +19,39 @@ class Page extends Component {
     );
   }
 }
+const MainPage = createStackNavigator({
+  PopularPage: {
+    screen: Popular,
+    navigationOptions: {
+      headerTitle: '主页',
+      headerBackTitle: null,
+    },
+  },
+});
 
+const TrendingPage = createStackNavigator({
+  TrendingPage: {
+    screen: Page,
+    navigationOptions: {
+      headerTitle: '打卡',
+      headerBackTitle: null,
+    },
+  },
+});
+const CommunityPage = createStackNavigator({
+  FavoritePage: {
+    screen: community,
+  },
+  DetailPage: {
+    screen: Detail,
+  },
+});
+
+const MyPage = createStackNavigator({
+  MyPage: {
+    screen: My,
+  },
+});
 export default class HomePage extends Component {
   render() {
     const Tab = this.tabNavigator();
@@ -30,7 +61,7 @@ export default class HomePage extends Component {
     return createAppContainer(
       createBottomTabNavigator({
         Popular: {
-          screen: Popular,
+          screen: MainPage,
           navigationOptions: {
             tabBarLabel: '主页',
             tabBarIcon: ({tintColor, focused}) => (
@@ -43,7 +74,7 @@ export default class HomePage extends Component {
           },
         },
         Trending: {
-          screen: Page,
+          screen: TrendingPage,
           navigationOptions: {
             tabBarLabel: '打卡',
             tabBarIcon: ({tintColor, focused}) => (
@@ -56,7 +87,7 @@ export default class HomePage extends Component {
           },
         },
         Favorite: {
-          screen: Favorite,
+          screen: CommunityPage,
           navigationOptions: {
             tabBarLabel: '社区',
             tabBarIcon: ({tintColor, focused}) => (
@@ -69,7 +100,7 @@ export default class HomePage extends Component {
           },
         },
         Me: {
-          screen: Page,
+          screen: MyPage,
           navigationOptions: {
             tabBarLabel: '我的',
             tabBarIcon: (

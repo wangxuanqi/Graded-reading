@@ -2,10 +2,21 @@ import React, {Component} from 'react';
 import {createAppContainer} from 'react-navigation';
 import {createMaterialTopTabNavigator} from 'react-navigation-tabs';
 import {View, Text, StyleSheet} from 'react-native';
-import NavigationUtil from '../navigation/NavigationUtil';
+import NavigationUtil from '../../navigation/NavigationUtil';
 
 /*最热页面*/
 export default class PopularPage extends Component {
+  //设置顶部导航栏的内容
+  static navigationOptions = ({navigation, screenProps}) => ({
+    //左侧标题
+    headerTitle: '主页',
+    //设置跳转页面左侧返回箭头后面的文字，默认是上一个页面的标题
+    headerBackTitle: null,
+    //顶部标题栏的样式
+    headerStyle: styles.headerStyle,
+    //顶部标题栏文字的样式
+    headerTitleStyle: styles.headerTitleStyle,
+  });
   constructor(props) {
     super(props);
     this.tabNames = [
@@ -78,6 +89,9 @@ class PopularTab extends Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#F5FCFF',
+  },
   tabStyle: {
     minWidth: 50,
   },
@@ -89,5 +103,16 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginTop: 6,
     marginBottom: 6,
+  },
+  headerStyle: {
+    backgroundColor: '#ffffff',
+  },
+  headerTitleStyle: {
+    //标题的文字颜色
+    color: 'black',
+    //设置标题的大小
+    fontSize: 18,
+    //居中显示
+    alignSelf: 'center',
   },
 });
