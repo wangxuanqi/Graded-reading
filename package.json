@@ -18,6 +18,7 @@
     "react-native-cookies": "^3.3.0",
     "react-native-fs": "^2.16.6",
     "react-native-gesture-handler": "^1.10.0",
+    "react-native-pdf-view": "git+https://git@github.com/cnjon/react-native-pdf-view#7f54227493d146eee0869c32627e1b7f801e7283",
     "react-native-reanimated": "^1.13.2",
     "react-native-safe-area-context": "^3.1.9",
     "react-native-safe-area-view": "^1.1.1",
@@ -26,7 +27,7 @@
     "react-native-vector-icons": "^8.0.0",
     "react-navigation": "^4.4.3",
     "react-navigation-stack": "^2.10.2",
-    "react-navigation-tabs": "^2.10.1"
+    "react-navigation-tabs": "^2.11.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",

@@ -46,6 +46,7 @@ const StackOptions = (
   );
   const mode = 'card';
   const headerMode = 'screen';
+
   return {
     headerStyle,
     headerTitle,

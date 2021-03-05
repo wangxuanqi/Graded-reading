@@ -22,7 +22,6 @@ export default class ListPage extends Component {
     };
   }
   componentDidMount() {
-    console.log('path', RNFS.DocumentDirectoryPath);
     const {title} = this.props.navigation.state.params;
     // load
     storage
@@ -72,7 +71,6 @@ export default class ListPage extends Component {
     const {title} = this.props.navigation.state.params;
     NetGet('/book/' + title)
       .then((res) => {
-        console.log('api', res);
         this.setState({bookList: res.data.bookList});
         storage.save({
           key: `${storageText.bookList}-${title}`, // Note: Do not use underscore("_") in key!

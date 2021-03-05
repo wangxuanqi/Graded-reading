@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
-//import Pdf from 'react-native-pdf';
+import PDFView from 'react-native-pdf-view';
 import {StackOptions} from '../../../utils/navigation';
 
 const {height, width} = Dimensions.get('window');
@@ -19,53 +19,49 @@ export default class DetailPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageCount: 1,
+      pageCount: 10,
+      pdfIndex: 1,
     };
     this.pdfView = null;
+    this.interval = null;
   }
+  componentDidMount() {
+    if (!this.interval) {
+      this.interval = setInterval(() => {
+        this.setState((prevState) => {
+          return {pdfIndex: prevState.pdfIndex + 1};
+        });
+
+        if (this.state.pdfIndex >= this.state.pageCount - 1) {
+          clearInterval(this.interval);
+        }
+        //do whatever here..
+      }, 5000);
+    }
+  }
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
   render() {
-    // let pages = [];
-    // const {pdfPath} = this.props.navigation.state.params;
+    const {pdfPath} = this.props.navigation.state.params;
+    const {pdfIndex} = this.state;
 
-    // for (var i = 2; i < this.state.pageCount + 1; i++) {
-    //   pages.push(
-    //     <PDFView
-    //       ref={(pdf) => {
-    //         this.pdfView = pdf;
-    //       }}
-    //       key={'sop' + i}
-    //       path={pdfPath}
-    //       pageNumber={i}
-    //       style={styles.pdf}
-    //     />,
-    //   );
-    // }
-
-    // return (
-    //   <ScrollView style={styles.pdfcontainer}>
-    //     <PDFView
-    //       ref={(pdf) => {
-    //         this.pdfView = pdf;
-    //       }}
-    //       key="sop"
-    //       path={pdfPath}
-    //       pageNumber={1}
-    //       onLoadComplete={(pageCount) => {
-    //         this.setState({pageCount: pageCount});
-    //         console.log(`pdf共有: ${pageCount}页`);
-    //       }}
-    //       style={styles.pdf}
-    //     />
-
-    //     {pages.map((elem, index) => {
-    //       return elem;
-    //     })}
-    //   </ScrollView>
-    // );
     return (
-      <View>
-        <Text>detail</Text>
-      </View>
+      <ScrollView style={styles.pdfcontainer}>
+        <PDFView
+          ref={(pdf) => {
+            this.pdfView = pdf;
+          }}
+          key="sop"
+          path={pdfPath}
+          pageNumber={pdfIndex}
+          onLoadComplete={(pageCount) => {
+            this.setState({pageCount: pageCount});
+          }}
+          style={styles.pdf}
+        />
+      </ScrollView>
     );
   }
 }

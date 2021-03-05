@@ -49,69 +49,82 @@ const MyPage = createStackNavigator({
     screen: My,
   },
 });
+
+const bottomTab = createBottomTabNavigator(
+  {
+    Popular: {
+      screen: MainPage,
+      navigationOptions: {
+        tabBarLabel: '分类',
+        tabBarIcon: ({tintColor, focused}) => (
+          <Ionicons
+            name={focused ? 'grid' : 'grid-outline'}
+            size={26}
+            style={{color: tintColor}}
+          />
+        ),
+      },
+    },
+    Trending: {
+      screen: ClockPage,
+      navigationOptions: {
+        tabBarLabel: '打卡',
+        tabBarIcon: ({tintColor, focused}) => (
+          <Ionicons
+            name={'ios-logo-slack'}
+            size={26}
+            style={{color: tintColor}}
+          />
+        ),
+      },
+    },
+    Favorite: {
+      screen: CommunityPage,
+      navigationOptions: {
+        tabBarLabel: '社区',
+        tabBarIcon: ({tintColor, focused}) => (
+          <Ionicons
+            name={focused ? 'ios-people' : 'ios-people-outline'}
+            size={26}
+            style={{color: tintColor}}
+          />
+        ),
+      },
+    },
+    Me: {
+      screen: MyPage,
+      navigationOptions: {
+        tabBarLabel: '我的',
+        tabBarIcon: (
+          {tintColor, focused}, // 这里是小括号
+        ) => (
+          <Ionicons
+            name={focused ? 'person' : 'person-outline'}
+            size={26}
+            style={{color: tintColor}}
+          />
+        ),
+      },
+    },
+  },
+  {tabBarOptions: {showLabel: true}},
+);
+// bottomTab.navigationOptions = ({navigation}) => {
+//   let tabBarVisible = false;
+//   // if (navigation.state.index > 1) {
+//   //   tabBarVisible = false;
+//   // }
+
+//   return {
+//     tabBarVisible,
+//   };
+// };
 export default class HomePage extends Component {
   render() {
     const Tab = this.tabNavigator();
     return <Tab />;
   }
   tabNavigator() {
-    return createAppContainer(
-      createBottomTabNavigator({
-        Popular: {
-          screen: MainPage,
-          navigationOptions: {
-            tabBarLabel: '分类',
-            tabBarIcon: ({tintColor, focused}) => (
-              <Ionicons
-                name={focused ? 'grid' : 'grid-outline'}
-                size={26}
-                style={{color: tintColor}}
-              />
-            ),
-          },
-        },
-        Trending: {
-          screen: ClockPage,
-          navigationOptions: {
-            tabBarLabel: '打卡',
-            tabBarIcon: ({tintColor, focused}) => (
-              <Ionicons
-                name={'ios-logo-slack'}
-                size={26}
-                style={{color: tintColor}}
-              />
-            ),
-          },
-        },
-        Favorite: {
-          screen: CommunityPage,
-          navigationOptions: {
-            tabBarLabel: '社区',
-            tabBarIcon: ({tintColor, focused}) => (
-              <Ionicons
-                name={focused ? 'ios-people' : 'ios-people-outline'}
-                size={26}
-                style={{color: tintColor}}
-              />
-            ),
-          },
-        },
-        Me: {
-          screen: MyPage,
-          navigationOptions: {
-            tabBarLabel: '我的',
-            tabBarIcon: (
-              {tintColor, focused}, // 这里是小括号
-            ) => (
-              <Ionicons
-                name={focused ? 'person' : 'person-outline'}
-                size={26}
-                style={{color: tintColor}}
-              />
-            ),
-          },
-        },
-      }),
-    );
+    return createAppContainer(bottomTab);
   }
 }
