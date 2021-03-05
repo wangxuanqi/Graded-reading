@@ -5905,6 +5905,11 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.npm.taobao.org/react-lifecycles-compat/download/react-lifecycles-compat-3.0.4.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-lifecycles-compat%2Fdownload%2Freact-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha1-TxonOv38jzSIqMUWv9p4+HI1I2I=
 
+react-native-audio@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.npm.taobao.org/react-native-audio/download/react-native-audio-4.3.0.tgz#fae22b81f6a4dda706fd4837d0c6a89c66cf2e7e"
+  integrity sha1-+uIrgfak3acG/Ug30MaonGbPLn4=
+
 react-native-axios@^0.17.1:
   version "0.17.1"
   resolved "https://registry.npm.taobao.org/react-native-axios/download/react-native-axios-0.17.1.tgz#44292950aa07ceee2e4bd349106ff773bef81f8f"
@@ -5980,6 +5985,11 @@ react-native-screens@^2.17.1:
   version "2.17.1"
   resolved "https://registry.npm.taobao.org/react-native-screens/download/react-native-screens-2.17.1.tgz?cache=0&sync_timestamp=1611658715231&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-native-screens%2Fdownload%2Freact-native-screens-2.17.1.tgz#c3c0ac750af48741c5b1635511e6af2a27b74309"
   integrity sha1-w8CsdQr0h0HFsWNVEeavKie3Qwk=
+
+react-native-sound@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.npm.taobao.org/react-native-sound/download/react-native-sound-0.11.0.tgz#ad60b55ba8c6dc89917f381ad3713f2738de530f"
+  integrity sha1-rWC1W6jG3ImRfzga03E/JzjeUw8=
 
 react-native-storage@^1.0.1:
   version "1.0.1"

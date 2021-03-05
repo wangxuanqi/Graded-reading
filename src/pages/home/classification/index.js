@@ -72,11 +72,9 @@ export default class IndexPage extends Component {
         console.warn(err.message);
         switch (err.name) {
           case 'NotFoundError':
-            // TODO;
             this.getBook();
             break;
           case 'ExpiredError':
-            // TODO
             this.getBook();
             break;
         }
@@ -97,7 +95,7 @@ export default class IndexPage extends Component {
         });
       })
       .catch((err) => {
-        console.log(err);
+        console.log('err', err);
       });
   }
   handlePress() {
