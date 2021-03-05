@@ -120,7 +120,7 @@ export default class IndexPage extends Component {
                   key={index}
                   style={styles.imgContainer}
                   onPress={() => {
-                    this.props.navigation.navigate('listPage', {
+                    this.props.navigation.navigate('ListPage', {
                       title: item.name,
                       parentTitle: TITLE,
                     });

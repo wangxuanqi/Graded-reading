@@ -62,9 +62,18 @@ export default class BookItem extends Component {
   };
   handlePress() {
     console.log('press');
-    const {item} = this.props;
+    const {item, navigation} = this.props;
     const {loading, downloaded} = this.state;
+
     if (downloaded) {
+      console.log(
+        '🚀 ~ file: bookItem.js ~ line 69 ~ BookItem ~ handlePress ~ navigation',
+        navigation,
+      );
+      navigation.navigate('DetailPage', {
+        title: item.title,
+        pdfPath: this.pdfPath,
+      });
       return;
     }
     if (!loading) {
@@ -104,6 +113,9 @@ export default class BookItem extends Component {
         console.log(error.message);
       });
   }
+  handleLongPress() {
+    console.log('long Press');
+  }
 
   render() {
     const {item} = this.props;
@@ -116,7 +128,8 @@ export default class BookItem extends Component {
     return (
       <TouchableOpacity
         style={styles.boxContainer}
-        onPress={this.handlePress.bind(this)}>
+        onPress={this.handlePress.bind(this)}
+        onLongPress={this.handleLongPress}>
         <View style={styles.imgContainer}>
           <Image
             source={{uri: item.coverUrl}}

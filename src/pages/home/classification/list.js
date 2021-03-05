@@ -60,11 +60,9 @@ export default class ListPage extends Component {
         console.warn(err.message);
         switch (err.name) {
           case 'NotFoundError':
-            // TODO;
             this.getBook();
             break;
           case 'ExpiredError':
-            // TODO
             this.getBook();
             break;
         }
@@ -99,7 +97,11 @@ export default class ListPage extends Component {
           <View style={styles.content}>
             {Array.isArray(bookList.urlNames) &&
               bookList.urlNames.map((item, index) => (
-                <BookItem item={item} key={index} />
+                <BookItem
+                  item={item}
+                  key={index}
+                  navigation={this.props.navigation}
+                />
               ))}
           </View>
         </ScrollView>

@@ -6,7 +6,8 @@ import classification from './classification/index';
 import list from './classification/list';
 import clock from './clock';
 import community from './community';
-import Detail from './community/DetailPage';
+import communityDetail from './community/DetailPage';
+import bookDetail from './classification/detail';
 import My from './my';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {createStackNavigator} from 'react-navigation-stack';
@@ -15,8 +16,11 @@ const MainPage = createStackNavigator({
   ClassificationPage: {
     screen: classification,
   },
-  listPage: {
+  ListPage: {
     screen: list,
+  },
+  DetailPage: {
+    screen: bookDetail,
   },
   mode: 'card',
   headerMode: 'float',
@@ -36,7 +40,7 @@ const CommunityPage = createStackNavigator({
     screen: community,
   },
   DetailPage: {
-    screen: Detail,
+    screen: communityDetail,
   },
 });
 
