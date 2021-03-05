@@ -37,12 +37,7 @@ export default class BookItem extends Component {
     });
   }
 
-  componentDidMount() {
-    console.log(
-      '🚀 ~ file: bookItem.js ~ line 47 ~ BookItem ~ componentDidMount ~ RNFS.exists(this.pdfPath)',
-      RNFS.exists(this.pdfPath),
-    );
-  }
+  componentDidMount() {}
   componentWillUnmount() {
     this.setState({loading: false});
   }
@@ -61,15 +56,13 @@ export default class BookItem extends Component {
     }
   };
   handlePress() {
-    console.log('press');
     const {item, navigation} = this.props;
     const {loading, downloaded} = this.state;
-
+    console.log('press', loading);
+    if (loading) {
+      return;
+    }
     if (downloaded) {
-      console.log(
-        '🚀 ~ file: bookItem.js ~ line 69 ~ BookItem ~ handlePress ~ navigation',
-        navigation,
-      );
       navigation.navigate('DetailPage', {
         title: item.title,
         pdfPath: this.pdfPath,
@@ -90,12 +83,13 @@ export default class BookItem extends Component {
       fromUrl: item.downloadPdfUrl, // URL to download file from
       toFile: this.pdfPath, // Local filesystem path to save the file to
     };
-    console.log(DownloadFileOptions);
     const result = RNFS.downloadFile(DownloadFileOptions);
     console.log(result);
+
     result.promise
       .then(
         (val) => {
+          console.log('Success Result:', val);
           this.setState({
             downloaded: true,
             loading: false,
