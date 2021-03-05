@@ -10,6 +10,12 @@ target 'demo' do
 
   pod 'RNGestureHandler', :path => '../node_modules/react-native-gesture-handler'
 
+  pod 'react-native-cookies', :path => '../node_modules/react-native-cookies'
+
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
+  pod 'RNFS', :path => '../node_modules/react-native-fs'
+
   target 'demoTests' do
     inherit! :complete
     # Pods for testing

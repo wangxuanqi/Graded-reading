@@ -1,14 +1,61 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, View, Image} from 'react-native';
+import {NetPost} from '../../utils/request';
 import EditView from '../../components/login/EditView';
 import LoginButton from '../../components/login/LoginButton';
 import LoginSuccess from '../../components/login/LoginSuccess';
+import storage from '../../store/init';
 
 export default class LoginActivity extends Component {
   constructor(props) {
     super(props);
     this.userName = '';
     this.password = '';
+  }
+
+  componentDidMount() {
+    // load
+    storage
+      .load({
+        key: 'loginState',
+
+        // autoSync (default: true) means if data is not found or has expired,
+        // then invoke the corresponding sync method
+        autoSync: true,
+
+        // syncInBackground (default: true) means if data expired,
+        // return the outdated data first while invoking the sync method.
+        // If syncInBackground is set to false, and there is expired data,
+        // it will wait for the new data and return only after the sync completed.
+        // (This, of course, is slower)
+        syncInBackground: true,
+
+        // you can pass extra params to the sync method
+        // see sync example below
+        syncParams: {
+          extraFetchOptions: {
+            // blahblah
+          },
+          someFlag: true,
+        },
+      })
+      .then((ret) => {
+        // found data go to then()
+        console.log(ret);
+      })
+      .catch((err) => {
+        // any exception including data not found
+        // goes to catch()
+        console.warn(err.message);
+        switch (err.name) {
+          case 'NotFoundError':
+            // TODO;
+            break;
+          case 'ExpiredError':
+            // TODO
+            break;
+        }
+      });
   }
 
   render() {
@@ -22,11 +69,11 @@ export default class LoginActivity extends Component {
             justifyContent: 'center',
             alignItems: 'flex-start',
           }}>
-          <Image source={require('../images/OIP.jpg')} />
+          <Image source={require('../../images/OIP.jpg')} />
         </View>
         <View style={{marginTop: 80}}>
           <EditView
-            name="输入用户名/注册手机号"
+            name="输入邮箱"
             onChangeText={(text) => {
               this.userName = text;
             }}
@@ -46,20 +93,32 @@ export default class LoginActivity extends Component {
     );
   }
 
-  onPressCallback = () => {
+  //跳转到第二个页面去
+  onLoginSuccess = (res) => {
+    storage.save({
+      key: 'loginState', // Note: Do not use underscore("_") in key!
+      data: res.data,
+
+      // if expires not specified, the defaultExpires will be applied instead.
+      // if set to null, then it will never expire.
+      expires: 1000 * 3600,
+    });
     this.props.navigation.navigate('HomePage', {key: '传递的标题'});
   };
 
-  //跳转到第二个页面去
-  onLoginSuccess() {
-    const {navigator} = this.props;
-    if (navigator) {
-      navigator.push({
-        name: 'LoginSuccess',
-        component: LoginSuccess,
+  onPressCallback = () => {
+    NetPost('/auth/login', {
+      password: this.password,
+      email: this.userName,
+    })
+      .then((res) => {
+        console.log(res);
+        this.onLoginSuccess(res);
+      })
+      .catch((err) => {
+        console.log(err);
       });
-    }
-  }
+  };
 }
 
 class loginLineView extends Component {

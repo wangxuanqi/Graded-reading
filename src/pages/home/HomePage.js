@@ -2,36 +2,29 @@ import React, {Component} from 'react';
 import {createAppContainer} from 'react-navigation';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
 import {View, Text} from 'react-native';
-import Popular from './index';
-// import Trending from '../tabPage/Trending';
+import classification from './classification/index';
+import list from './classification/list';
+import clock from './clock';
 import community from './community';
 import Detail from './community/DetailPage';
-import My from '../my';
+import My from './my';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {createStackNavigator} from 'react-navigation-stack';
 
-class Page extends Component {
-  render() {
-    return (
-      <View>
-        <Text>FavoritePage</Text>
-      </View>
-    );
-  }
-}
 const MainPage = createStackNavigator({
-  PopularPage: {
-    screen: Popular,
-    navigationOptions: {
-      headerTitle: '主页',
-      headerBackTitle: null,
-    },
+  ClassificationPage: {
+    screen: classification,
   },
+  listPage: {
+    screen: list,
+  },
+  mode: 'card',
+  headerMode: 'float',
 });
 
-const TrendingPage = createStackNavigator({
-  TrendingPage: {
-    screen: Page,
+const ClockPage = createStackNavigator({
+  ClockPage: {
+    screen: clock,
     navigationOptions: {
       headerTitle: '打卡',
       headerBackTitle: null,
@@ -63,10 +56,10 @@ export default class HomePage extends Component {
         Popular: {
           screen: MainPage,
           navigationOptions: {
-            tabBarLabel: '主页',
+            tabBarLabel: '分类',
             tabBarIcon: ({tintColor, focused}) => (
               <Ionicons
-                name={focused ? 'ios-home' : 'ios-home-outline'}
+                name={focused ? 'grid' : 'grid-outline'}
                 size={26}
                 style={{color: tintColor}}
               />
@@ -74,7 +67,7 @@ export default class HomePage extends Component {
           },
         },
         Trending: {
-          screen: TrendingPage,
+          screen: ClockPage,
           navigationOptions: {
             tabBarLabel: '打卡',
             tabBarIcon: ({tintColor, focused}) => (

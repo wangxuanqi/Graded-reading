@@ -15,6 +15,7 @@ class FavoritePage extends Component {
     headerTitle: '我的',
     //设置跳转页面左侧返回箭头后面的文字，默认是上一个页面的标题
     headerBackTitle: null,
+    headerLeft: () => null,
     //顶部标题栏的样式
     headerStyle: styles.headerStyle,
     //顶部标题栏文字的样式

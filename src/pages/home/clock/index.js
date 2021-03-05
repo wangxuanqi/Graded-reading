@@ -1,20 +1,14 @@
 import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  Button,
-  TouchableOpacity,
-  StyleSheet,
-  StatusBar,
-} from 'react-native';
+import {View, Text, Button, StyleSheet} from 'react-native';
 
-class FavoritePage extends Component {
+class ClockPage extends Component {
   //设置顶部导航栏的内容
   static navigationOptions = ({navigation, screenProps}) => ({
     //左侧标题
-    headerTitle: '我的',
+    headerTitle: '打卡',
     //设置跳转页面左侧返回箭头后面的文字，默认是上一个页面的标题
     headerBackTitle: null,
+    headerLeft: () => null,
     //顶部标题栏的样式
     headerStyle: styles.headerStyle,
     //顶部标题栏文字的样式
@@ -23,9 +17,9 @@ class FavoritePage extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <StatusBar barStyle={'dark-content'} />
-        <Text>my</Text>
+      <View>
+        <Text>TrendingPage</Text>
+        <Button title="改变主题颜色--绿色" />
       </View>
     );
   }
@@ -59,4 +53,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FavoritePage;
+export default ClockPage;
