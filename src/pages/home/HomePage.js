@@ -8,6 +8,7 @@ import clock from './clock';
 import community from './community';
 import communityDetail from './community/DetailPage';
 import bookDetail from './classification/detail';
+import bookRecord from './classification/record';
 import My from './my';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {createStackNavigator} from 'react-navigation-stack';
@@ -21,6 +22,9 @@ const MainPage = createStackNavigator({
   },
   DetailPage: {
     screen: bookDetail,
+  },
+  RecordPage: {
+    screen: bookRecord,
   },
   mode: 'card',
   headerMode: 'float',

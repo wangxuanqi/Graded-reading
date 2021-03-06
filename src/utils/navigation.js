@@ -11,12 +11,12 @@ const StackOptions = (
 ) => {
   let {state, goBack} = navigation;
 
-  // 用来判断是否隐藏或显示header
-  // const visible = state.params.isVisible;
-  // let header;
-  // if (visible === true) {
-  //   header = null;
-  // }
+  //用来判断是否隐藏或显示header;
+  const visible = state.params.isVisible;
+  let headerShown;
+  if (visible === false) {
+    headerShown = false;
+  }
   const headerStyle = {backgroundColor: '#ffffff'};
   const headerTitleStyle = {
     fontSize: setSpText(35),
@@ -48,6 +48,7 @@ const StackOptions = (
   const headerMode = 'screen';
 
   return {
+    headerShown,
     headerStyle,
     headerTitle,
     headerTitleStyle,

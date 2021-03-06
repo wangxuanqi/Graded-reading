@@ -66,6 +66,9 @@ export default class BookItem extends Component {
       navigation.navigate('DetailPage', {
         title: item.title,
         pdfPath: this.pdfPath,
+        Mp3Path: item.downloadMp3Url,
+        isVisible: false,
+        keys: {list_ley: this.props.navigation.state.key},
       });
       return;
     }
@@ -85,15 +88,26 @@ export default class BookItem extends Component {
     };
     const result = RNFS.downloadFile(DownloadFileOptions);
     console.log(result);
+    console.log(
+      '🚀 ~ file: bookItem.js ~ line 94 ~ BookItem ~ handlePress ~ DownloadFileOptions',
+      DownloadFileOptions,
+    );
 
     result.promise
       .then(
         (val) => {
           console.log('Success Result:', val);
-          this.setState({
-            downloaded: true,
-            loading: false,
-          });
+          if (val.statusCode === '200') {
+            this.setState({
+              downloaded: true,
+              loading: false,
+            });
+          } else {
+            this.setState({
+              downloaded: false,
+              loading: false,
+            });
+          }
         },
         (val) => {
           this.setState({
