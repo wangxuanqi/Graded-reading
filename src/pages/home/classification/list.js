@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {View, Text, Image, StyleSheet, ScrollView} from 'react-native';
-import RNFS from 'react-native-fs';
 import {StackOptions} from '../../../utils/navigation';
-import storage from '../../../store/init';
+import storage from '../../../store/storage';
 import {NetGet} from '../../../utils/request';
 import {scaleSizeH, scaleSizeW, setSpText} from '../../../utils/screen';
 import * as storageText from '../../../data/storage';

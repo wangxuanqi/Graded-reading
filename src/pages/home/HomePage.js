@@ -4,14 +4,20 @@ import {createBottomTabNavigator} from 'react-navigation-tabs';
 import {View, Text} from 'react-native';
 import classification from './classification/index';
 import list from './classification/list';
+
 import clock from './clock';
+import Edit from './clock/EditScreen.js';
+
 import community from './community';
+import communityPublic from './community/publish';
 import communityDetail from './community/DetailPage';
 import bookDetail from './classification/detail';
 import bookRecord from './classification/record';
 import My from './my';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {createStackNavigator} from 'react-navigation-stack';
+import {Provider} from 'react-redux';
+import store from '../../store/store';
 
 const MainPage = createStackNavigator({
   ClassificationPage: {
@@ -38,6 +44,9 @@ const ClockPage = createStackNavigator({
       headerBackTitle: null,
     },
   },
+  EditPage: {
+    screen: Edit,
+  },
 });
 const CommunityPage = createStackNavigator({
   FavoritePage: {
@@ -45,6 +54,9 @@ const CommunityPage = createStackNavigator({
   },
   DetailPage: {
     screen: communityDetail,
+  },
+  PublicPage: {
+    screen: communityPublic,
   },
 });
 
@@ -126,7 +138,11 @@ const bottomTab = createBottomTabNavigator(
 export default class HomePage extends Component {
   render() {
     const Tab = this.tabNavigator();
-    return <Tab />;
+    return (
+      <Provider store={store}>
+        <Tab />
+      </Provider>
+    );
   }
   tabNavigator() {
     return createAppContainer(bottomTab);

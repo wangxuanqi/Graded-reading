@@ -20,6 +20,10 @@ target 'demo' do
 
   pod 'RNSound', :path => '../node_modules/react-native-sound'
 
+  pod 'react-native-image-picker', :path => '../node_modules/react-native-image-picker'
+
+  pod 'aliyun-oss-react-native', :path => '../node_modules/aliyun-oss-react-native'
+
   target 'demoTests' do
     inherit! :complete
     # Pods for testing

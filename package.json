@@ -12,13 +12,17 @@
   "dependencies": {
     "@react-native-community/async-storage": "^1.12.1",
     "@react-native-community/masked-view": "^0.1.10",
+    "aliyun-oss-react-native": "^1.0.0-alpha.7",
+    "antd-mobile": "^2.3.4",
+    "moment": "^2.29.1",
     "react": "16.13.1",
     "react-native": "0.63.4",
     "react-native-audio": "^4.3.0",
     "react-native-axios": "^0.17.1",
-    "react-native-cookies": "^3.3.0",
     "react-native-fs": "^2.16.6",
     "react-native-gesture-handler": "^1.10.0",
+    "react-native-image-picker": "2.3.4",
+    "react-native-image-zoom-viewer": "^3.0.1",
     "react-native-pdf-view": "git+https://git@github.com/cnjon/react-native-pdf-view#7f54227493d146eee0869c32627e1b7f801e7283",
     "react-native-reanimated": "^1.13.2",
     "react-native-safe-area-context": "^3.1.9",
@@ -29,7 +33,10 @@
     "react-native-vector-icons": "^8.0.0",
     "react-navigation": "^4.4.3",
     "react-navigation-stack": "^2.10.2",
-    "react-navigation-tabs": "^2.11.0"
+    "react-navigation-tabs": "^2.11.0",
+    "react-redux": "^7.2.2",
+    "redux": "^4.0.5",
+    "redux-logger": "^3.0.6"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",

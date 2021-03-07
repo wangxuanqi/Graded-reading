@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import {NetGet} from '../../../utils/request';
 import {scaleSizeH, scaleSizeW, setSpText} from '../../../utils/screen';
-import storage from '../../../store/init';
+import storage from '../../../store/storage';
 import * as storageText from '../../../data/storage';
 
 const TITLE = '分类';

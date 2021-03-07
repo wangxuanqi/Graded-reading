@@ -34,13 +34,13 @@ instance.interceptors.response.use(function (response) {
   return Promise.reject(error);
 });
 
-var NetPost = function NetPost(api, params) {
+var NetPost = function NetPost(api, params, config) {
   return regeneratorRuntime.async(function NetPost$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
           return _context.abrupt("return", new Promise(function (resolve, reject) {
-            instance.post(api, params).then(function (res) {
+            instance.post(api, params, config).then(function (res) {
               resolve(res.data);
             })["catch"](function (error) {
               reject(error);
@@ -57,13 +57,13 @@ var NetPost = function NetPost(api, params) {
 
 exports.NetPost = NetPost;
 
-var NetGet = function NetGet(api, params) {
+var NetGet = function NetGet(api, config) {
   return regeneratorRuntime.async(function NetGet$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
           return _context2.abrupt("return", new Promise(function (resolve, reject) {
-            instance.get(api, params).then(function (res) {
+            instance.get(api, config).then(function (res) {
               resolve(res.data);
             })["catch"](function (error) {
               reject(error);

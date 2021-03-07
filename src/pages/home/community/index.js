@@ -1,15 +1,30 @@
 import React, {Component} from 'react';
 import {View, Text, Button, TouchableOpacity, StyleSheet} from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {scaleSizeH, scaleSizeW, setSpText} from '../../../utils/screen';
 import {StackOptions} from '../../../utils/navigation';
 
-class FavoritePage extends Component {
+class CommunityPage extends Component {
   //设置顶部导航栏的内容
   static navigationOptions = ({navigation, screenProps}) => ({
     //左侧标题
     headerTitle: '社区',
     //设置跳转页面左侧返回箭头后面的文字，默认是上一个页面的标题
     headerBackTitle: null,
-    headerLeft: () => null,
+    headerLeft: () => <View />,
+    headerRight: () => (
+      <TouchableOpacity
+        style={{padding: scaleSizeW(10)}}
+        onPress={() => {
+          navigation.navigate('PublicPage', {});
+        }}>
+        <Ionicons
+          name="add-circle"
+          size={scaleSizeW(50)}
+          style={{color: '#4398ff'}}
+        />
+      </TouchableOpacity>
+    ),
     //顶部标题栏的样式
     headerStyle: styles.headerStyle,
     //顶部标题栏文字的样式
@@ -40,7 +55,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#e5e6e7',
   },
   button: {
     width: 240,
@@ -63,4 +78,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FavoritePage;
+export default CommunityPage;

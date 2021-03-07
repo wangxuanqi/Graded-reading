@@ -30,10 +30,10 @@ instance.interceptors.response.use(
   },
 );
 
-const NetPost = async (api, params) => {
+const NetPost = async (api, params, config) => {
   return new Promise((resolve, reject) => {
     instance
-      .post(api, params)
+      .post(api, params, config)
       .then((res) => {
         resolve(res.data);
       })
@@ -43,10 +43,10 @@ const NetPost = async (api, params) => {
   });
 };
 
-const NetGet = async (api, params) => {
+const NetGet = async (api, config) => {
   return new Promise((resolve, reject) => {
     instance
-      .get(api, params)
+      .get(api, config)
       .then((res) => {
         resolve(res.data);
       })

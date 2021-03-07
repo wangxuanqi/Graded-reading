@@ -4,7 +4,7 @@ import {NetPost} from '../../utils/request';
 import EditView from '../../components/login/EditView';
 import LoginButton from '../../components/login/LoginButton';
 import LoginSuccess from '../../components/login/LoginSuccess';
-import storage from '../../store/init';
+import storage from '../../store/storage';
 
 export default class LoginActivity extends Component {
   constructor(props) {
