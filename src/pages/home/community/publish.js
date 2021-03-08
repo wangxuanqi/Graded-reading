@@ -51,21 +51,23 @@ class PublicPage extends Component {
     headerBackTitle: null,
     headerLeft: () => (
       <TouchableOpacity
+        style={{marginLeft: scaleSizeW(10)}}
         onPress={() => {
           navigation.goBack();
         }}>
-        <Text>取消</Text>
+        <Text style={{fontSize: setSpText(30)}}>取消</Text>
       </TouchableOpacity>
     ),
     headerRight: () => (
       <TouchableOpacity
+        style={styles.headerRight}
         onPress={() => {
           Alert.alert('提示', '您确定要进行配音吗', [
             {text: '取消', onPress: () => {}},
             {text: '确定', onPress: navigation.state.params.public},
           ]);
         }}>
-        <Text>发布</Text>
+        <Text style={styles.publicBtn}>发布</Text>
       </TouchableOpacity>
     ),
     //顶部标题栏的样式
@@ -249,6 +251,19 @@ const styles = StyleSheet.create({
     fontSize: 18,
     //居中显示
     alignSelf: 'center',
+  },
+  headerRight: {
+    marginRight: scaleSizeW(10),
+    backgroundColor: '#2396F3',
+    height: scaleSizeH(60),
+    width: scaleSizeW(90),
+    borderRadius: scaleSizeH(30),
+  },
+  publicBtn: {
+    fontSize: setSpText(30),
+    color: '#fff',
+    lineHeight: scaleSizeH(60),
+    textAlign: 'center',
   },
   input: {
     width: Dimensions.get('window').width - scaleSizeW(20),
