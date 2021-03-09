@@ -18,6 +18,9 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {scaleSizeH, scaleSizeW, setSpText} from '../../../utils/screen';
 import {uploadOssFile} from '../../../utils/oss-upload';
 import SpliteLine from '../../../components/common/spliteLine';
+import {NetPost} from '../../../utils/request';
+import {getAllMoments} from '../../../actions/actions';
+import {connect} from 'react-redux';
 
 const options = {
   title: '选择图片',
@@ -62,7 +65,7 @@ class PublicPage extends Component {
       <TouchableOpacity
         style={styles.headerRight}
         onPress={() => {
-          Alert.alert('提示', '您确定要进行配音吗', [
+          Alert.alert('提示', '您确定发布动态吗', [
             {text: '取消', onPress: () => {}},
             {text: '确定', onPress: navigation.state.params.public},
           ]);
@@ -78,16 +81,22 @@ class PublicPage extends Component {
 
   constructor(props) {
     super(props);
+    const {navigation} = this.props;
+
     this.state = {
       text: '',
       height: scaleSizeH(50),
       modalVisible: false,
-      imagesPath: [],
+      imagesPath: navigation.state.params.share
+        ? [{url: navigation.state.params.coverPath}]
+        : [],
     };
   }
 
   componentDidMount() {
-    this.props.navigation.setParams({public: this.public});
+    const {navigation} = this.props;
+
+    navigation.setParams({public: this.public});
   }
 
   onChangeText = (text) => {
@@ -98,19 +107,63 @@ class PublicPage extends Component {
 
   public = () => {
     const {imagesPath, text} = this.state;
+    const {loginState, navigation} = this.props;
     let promises = [];
+
+    if (navigation.state.params.share) {
+      NetPost(
+        '/moment',
+        {
+          article: text,
+          publicUser: loginState._id,
+          imagesUrl: imagesPath,
+          share: navigation.state.params.share,
+        },
+        {
+          headers: {
+            Authorization: 'Bearer ' + loginState.token,
+          },
+        },
+      )
+        .then((res) => {
+          this.props.getAllMoments(loginState.token);
+          this.props.navigation.goBack();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      return;
+    }
 
     for (let i = 0; i < imagesPath.length; i++) {
       console.log(imagesPath[i].url);
       promises.push(uploadOssFile(imagesPath[i].url));
     }
     Promise.all([...promises])
-      .then((res) => {
-        console.log('上传成功！', res);
-        const paths = [
-          'https://graded-reading.oss-cn-shenzhen.aliyuncs.com/upload/assets/202103/16151246903860.12887538821596733.jpg',
-          'https://graded-reading.oss-cn-shenzhen.aliyuncs.com/upload/assets/202103/16151246903950.2814058852879697.jpg',
-        ];
+      .then((paths) => {
+        console.log('上传成功！', paths);
+        NetPost(
+          '/moment',
+          {
+            article: text,
+            publicUser: loginState._id,
+            imagesUrl: paths,
+            share: navigation.state.params.share,
+          },
+          {
+            headers: {
+              Authorization: 'Bearer ' + loginState.token,
+            },
+          },
+        )
+          .then((res) => {
+            this.props.getAllMoments(loginState.token);
+            this.props.navigation.goBack();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       })
       .catch((err) => {
         console.warn(err);
@@ -164,12 +217,14 @@ class PublicPage extends Component {
 
   render() {
     const {text, height, imagesPath, modalVisible} = this.state;
+    const {navigation} = this.props;
+    const {share} = navigation.state.params;
 
     return (
       <View style={styles.container}>
         <TextInput
           style={[styles.input, {height: height}]}
-          placeholder="分享你的学习过程或者成就吧"
+          placeholder="分享您孩子的学习过程或者成就吧"
           onContentSizeChange={this.onContentSizeChange}
           onChangeText={this.onChangeText}
           value={text}
@@ -183,35 +238,59 @@ class PublicPage extends Component {
           }}
           lineHeight={scaleSizeH(1)}
         />
-        <View style={styles.photoContainer}>
-          {imagesPath.map((item, index) => (
-            <TouchableOpacity
-              onPress={this.openModal}
-              onLongPress={() => this.deleteImage(index)}
-              delayLongPress={2000}
-              key={index}>
+        {!share && (
+          <View style={styles.photoContainer}>
+            {imagesPath.map((item, index) => (
+              <TouchableOpacity
+                onPress={this.openModal}
+                onLongPress={() => this.deleteImage(index)}
+                delayLongPress={2000}
+                key={index}>
+                <Image
+                  source={{uri: item.url}}
+                  style={{
+                    width: scaleSizeW(200),
+                    height: scaleSizeW(200),
+                    marginRight: scaleSizeW(30),
+                  }}
+                  resizeMode="cover"
+                />
+              </TouchableOpacity>
+            ))}
+            {imagesPath.length < 9 && (
+              <TouchableOpacity style={styles.photo} onPress={this.uploadImage}>
+                <MaterialIcons
+                  name="add-photo-alternate"
+                  size={scaleSizeW(150)}
+                  style={{color: '#dadada'}}
+                />
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
+        {share && (
+          <View style={styles.shareContainer}>
+            <TouchableOpacity>
               <Image
-                source={{uri: item.url}}
+                source={{uri: imagesPath[0].url}}
                 style={{
-                  width: scaleSizeW(200),
-                  height: scaleSizeW(200),
-                  marginRight: scaleSizeW(30),
+                  width: scaleSizeW(300),
+                  height: scaleSizeH(370),
                 }}
-                resizeMode="cover"
+                resizeMode="stretch"
               />
+              <View style={styles.shareBottom}>
+                <Text style={{textAlign: 'center'}}>
+                  {navigation.state.params.class}
+                </Text>
+                <Text style={styles.shareTitle}>
+                  {navigation.state.params.title}
+                </Text>
+              </View>
             </TouchableOpacity>
-          ))}
-          {imagesPath.length < 9 && (
-            <TouchableOpacity style={styles.photo} onPress={this.uploadImage}>
-              <MaterialIcons
-                name="add-photo-alternate"
-                size={scaleSizeW(150)}
-                style={{color: '#dadada'}}
-              />
-            </TouchableOpacity>
-          )}
-        </View>
-        <Text style={styles.tipText}>(长按图片2s删除)</Text>
+          </View>
+        )}
+        {!share && <Text style={styles.tipText}>(长按图片2s删除)</Text>}
         <Modal visible={modalVisible} transparent={true}>
           <ImageViewer
             imageUrls={imagesPath}
@@ -285,10 +364,34 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  shareContainer: {
+    padding: scaleSizeW(30),
+  },
+  shareBottom: {
+    width: scaleSizeW(300),
+    backgroundColor: '#eeeeee',
+    padding: scaleSizeW(10),
+  },
+  shareTitle: {
+    textAlign: 'center',
+    fontSize: setSpText(40),
+    fontWeight: '900',
+    lineHeight: scaleSizeH(40),
+  },
   tipText: {
     color: '#999999',
     marginLeft: scaleSizeW(30),
   },
 });
 
-export default PublicPage;
+const mapStateToProps = (state) => ({
+  loginState: state.loginState,
+});
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getAllMoments: (username) => dispatch(getAllMoments(username)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PublicPage);

@@ -1,2 +1,5 @@
 // actionsTypes.js
-export const CHANGE_NAME = 'CHANGE_NAME';
+export const SET_LOGIN_STATE = 'SET_LOGIN_STATE';
+export const GET_ALL_MOMENTS = 'GET_ALL_MOMENTS';
+export const INSERT_COMMENT = 'INSERT_COMMENT';
+export const THUMBS_UP_MOMENT = 'THUMBS_UP_MOMENT ';

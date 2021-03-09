@@ -7,16 +7,20 @@ import {
   Image,
   ScrollView,
   TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import {NetGet} from '../../../utils/request';
 import {scaleSizeH, scaleSizeW, setSpText} from '../../../utils/screen';
 import storage from '../../../store/storage';
 import * as storageText from '../../../data/storage';
+import {connect} from 'react-redux';
+
+const dpWidth = Dimensions.get('window').width;
 
 const TITLE = '分类';
 
 /*最热页面*/
-export default class IndexPage extends Component {
+class IndexPage extends Component {
   //设置顶部导航栏的内容
   static navigationOptions = ({navigation, screenProps}) => ({
     //左侧标题
@@ -36,6 +40,7 @@ export default class IndexPage extends Component {
     };
   }
   componentDidMount() {
+    console.log('login', this.props.loginState);
     // load
     storage
       .load({
@@ -67,9 +72,6 @@ export default class IndexPage extends Component {
         console.log('storage', ret);
       })
       .catch((err) => {
-        // any exception including data not found
-        // goes to catch()
-        console.warn(err.message);
         switch (err.name) {
           case 'NotFoundError':
             this.getBook();
@@ -141,7 +143,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     display: 'flex',
-    backgroundColor: '#e5e6e7',
+    backgroundColor: '#f1f2f3',
   },
   headerStyle: {
     backgroundColor: '#ffffff',
@@ -158,6 +160,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
+    flexWrap: 'wrap',
+    width: dpWidth,
   },
   imgContainer: {
     width: scaleSizeW(210),
@@ -181,3 +185,9 @@ const styles = StyleSheet.create({
     fontSize: setSpText(25),
   },
 });
+
+const mapStateToProps = (state) => ({
+  loginState: state.loginState,
+});
+
+export default connect(mapStateToProps)(IndexPage);

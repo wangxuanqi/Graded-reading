@@ -16,8 +16,10 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import moment from 'moment';
 import {scaleSizeH, scaleSizeW, setSpText} from '../../utils/screen';
-
-export default class MomentItem extends Component {
+import {NetPost} from '../../utils/request';
+import {connect} from 'react-redux';
+import {insertComment, thumbsUpMoment} from '../../actions/actions';
+class MomentItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -26,8 +28,6 @@ export default class MomentItem extends Component {
       myCommentText: '',
     };
   }
-
-  componentDidMount() {}
 
   closeModal = () => {
     this.setState({
@@ -53,9 +53,59 @@ export default class MomentItem extends Component {
     });
   };
 
+  commitComment = () => {
+    const {myCommentText} = this.state;
+    const {item, loginState, insertCommentMap} = this.props;
+    NetPost(
+      '/moment/comment',
+      {content: myCommentText, momentId: item._id},
+      {
+        headers: {
+          Authorization: 'Bearer ' + loginState.token,
+        },
+      },
+    )
+      .then((res) => {
+        console.log(res.data);
+        insertCommentMap(res.data);
+        this.setState({myCommentText: ''});
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  thumbsUpMoment = () => {
+    const {item, loginState, thumbsUpMomentMap} = this.props;
+    NetPost(
+      '/moment/thumbs-up',
+      {momentId: item._id},
+      {
+        headers: {
+          Authorization: 'Bearer ' + loginState.token,
+        },
+      },
+    )
+      .then((res) => {
+        console.log(res.data);
+        thumbsUpMomentMap(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   render() {
-    const {item} = this.props;
+    const {item, loginState, thumbsUpCount, navigation} = this.props;
     const {modalVisible, commentAreaVisible, myCommentText} = this.state;
+    const hadThumbsUp = item.thumbsUp.indexOf(loginState._id) !== -1;
+    let shareTitle = '';
+    let shareClass = '';
+    if (item.share) {
+      const arr = item.imagesUrl[0].url.split('/');
+      shareClass = arr[arr.length - 2];
+      shareTitle = arr[arr.length - 1].replace('.png', '');
+    }
 
     return (
       <View style={styles.container}>
@@ -66,36 +116,82 @@ export default class MomentItem extends Component {
           />
         </View>
         <View style={styles.rightContent}>
-          <Text style={styles.userName}>{item.publicUser.userName}</Text>
+          <Text style={styles.userName}>
+            {item.publicUser.userName || 'test'}
+          </Text>
           <Text style={styles.articleText}>{item.article}</Text>
-          <View style={styles.photoContainer}>
-            {item.imagesUrl.map((o, index) => (
-              <TouchableOpacity key={index} onPress={this.openModal}>
+          {!item.share && (
+            <View style={styles.photoContainer}>
+              {item.imagesUrl.map((o, index) => (
+                <TouchableOpacity key={index} onPress={this.openModal}>
+                  <Image
+                    source={{uri: o.url}}
+                    style={{
+                      width: scaleSizeW(180),
+                      height: scaleSizeW(180),
+                      marginRight: scaleSizeW(15),
+                      marginTop: scaleSizeW(15),
+                    }}
+                    resizeMode="cover"
+                  />
+                </TouchableOpacity>
+              ))}
+            </View>
+          )}
+          {item.share && (
+            <View style={styles.shareContainer}>
+              <TouchableOpacity
+                style={{
+                  width: scaleSizeW(280),
+                }}
+                onPress={() => {
+                  navigation.navigate('ListPage', {
+                    title: shareClass,
+                    parentTitle: '分类',
+                  });
+                }}>
                 <Image
-                  source={{uri: o.url}}
+                  source={{uri: item.imagesUrl[0].url}}
                   style={{
-                    width: scaleSizeW(180),
-                    height: scaleSizeW(180),
-                    marginRight: scaleSizeW(15),
-                    marginTop: scaleSizeW(15),
+                    width: scaleSizeW(280),
+                    height: scaleSizeH(340),
                   }}
-                  resizeMode="cover"
+                  resizeMode="stretch"
                 />
+                <View style={styles.shareBottom}>
+                  <Text style={{textAlign: 'center'}}>{shareClass}</Text>
+                  <Text style={styles.shareTitle}>{shareTitle}</Text>
+                </View>
               </TouchableOpacity>
-            ))}
-          </View>
+            </View>
+          )}
           <View style={styles.bottomContent}>
             <Text>{moment(item.created_at).format('h:mm a  MM-DD')}</Text>
             <TouchableOpacity
               style={styles.comment}
               onPress={this.toggleCommentArea}>
               <FontAwesome name="commenting-o" size={scaleSizeW(30)} />
-              <Text>评论</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.thumbsUp}>
-              <FontAwesome name="thumbs-o-up" size={scaleSizeW(30)} />
               <Text style={{marginLeft: scaleSizeW(10)}}>
-                {item.thumbsUp.length === 0 ? '赞' : item.thumbsUp.length}
+                {item.commentUsers.length === 0
+                  ? '评论'
+                  : item.commentUsers.length}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.thumbsUp}
+              onPress={this.thumbsUpMoment}
+              disabled={hadThumbsUp}>
+              <FontAwesome
+                name={hadThumbsUp ? 'thumbs-up' : 'thumbs-o-up'}
+                size={scaleSizeW(30)}
+                style={hadThumbsUp ? {color: '#4398ff'} : null}
+              />
+              <Text
+                style={[
+                  {marginLeft: scaleSizeW(10)},
+                  hadThumbsUp ? {color: '#4398ff'} : null,
+                ]}>
+                {thumbsUpCount === 0 ? '赞' : thumbsUpCount}
               </Text>
             </TouchableOpacity>
           </View>
@@ -114,14 +210,21 @@ export default class MomentItem extends Component {
                   multiline={true}
                   style={styles.commentInput}
                 />
-                <TouchableOpacity style={styles.commitBtnContainer}>
+                <TouchableOpacity
+                  style={styles.commitBtnContainer}
+                  onPress={this.commitComment}>
                   <Text style={styles.commitBtn}>提交</Text>
                 </TouchableOpacity>
               </View>
               {item.commentUsers.length > 0 && (
                 <View>
                   {item.commentUsers.map((o, i) => (
-                    <Text style={{lineHeight: scaleSizeH(40)}}>
+                    <Text
+                      style={{
+                        lineHeight: scaleSizeH(40),
+                        marginLeft: scaleSizeW(10),
+                      }}
+                      key={i}>
                       {o.user.userName || 'test'}: {o.content}
                     </Text>
                   ))}
@@ -164,7 +267,7 @@ const styles = StyleSheet.create({
   userName: {
     color: '#000',
     fontSize: setSpText(30),
-    fontWeight: '800',
+    fontWeight: 'bold',
     lineHeight: setSpText(30),
   },
   articleText: {
@@ -186,7 +289,7 @@ const styles = StyleSheet.create({
   },
   comment: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     marginLeft: scaleSizeW(160),
     width: scaleSizeW(90),
   },
@@ -219,4 +322,27 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: scaleSizeH(50),
   },
+  shareContainer: {
+    paddingTop: scaleSizeW(30),
+  },
+  shareBottom: {
+    width: scaleSizeW(280),
+    backgroundColor: '#eeeeee',
+    padding: scaleSizeW(5),
+  },
+  shareTitle: {
+    textAlign: 'center',
+    fontSize: setSpText(40),
+    fontWeight: '900',
+    lineHeight: scaleSizeH(40),
+  },
 });
+const mapStateToProps = (state) => ({});
+const mapDispatchToProps = (dispatch) => {
+  return {
+    insertCommentMap: (val) => dispatch(insertComment(val)),
+    thumbsUpMomentMap: (val) => dispatch(thumbsUpMoment(val)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MomentItem);

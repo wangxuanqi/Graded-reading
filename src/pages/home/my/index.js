@@ -5,10 +5,15 @@ import {
   Button,
   TouchableOpacity,
   StyleSheet,
-  StatusBar,
+  Dimensions,
+  Image,
 } from 'react-native';
+import {connect} from 'react-redux';
+import {scaleSizeH, scaleSizeW, setSpText} from '../../../utils/screen';
 
-class FavoritePage extends Component {
+const dpWidth = Dimensions.get('window').width;
+
+class MyPage extends Component {
   //设置顶部导航栏的内容
   static navigationOptions = ({navigation, screenProps}) => ({
     //左侧标题
@@ -23,10 +28,28 @@ class FavoritePage extends Component {
   });
 
   render() {
+    const {loginState} = this.props;
     return (
       <View style={styles.container}>
-        <StatusBar barStyle={'dark-content'} />
-        <Text>my</Text>
+        <View style={styles.headerContainer}>
+          <Image
+            source={require('../../../images/head.jpg')}
+            style={styles.head}
+          />
+          <View style={{marginLeft: scaleSizeW(20)}}>
+            <Text style={{fontSize: setSpText(45), fontWeight: 'bold'}}>
+              {loginState.userName}
+            </Text>
+            <Text>email: {loginState.email}</Text>
+          </View>
+        </View>
+        <TouchableOpacity
+          onPress={() =>
+            this.props.navigation.navigate('LoginPage', {from: 'MyPage'})
+          }
+          style={styles.btn}>
+          <Text style={styles.text}>重新登录</Text>
+        </TouchableOpacity>
       </View>
     );
   }
@@ -35,9 +58,8 @@ class FavoritePage extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: '#f1f2f3',
   },
   button: {
     width: 240,
@@ -58,6 +80,39 @@ const styles = StyleSheet.create({
     //居中显示
     alignSelf: 'center',
   },
+  headerContainer: {
+    width: dpWidth - scaleSizeW(70),
+    backgroundColor: '#ffffff',
+    padding: scaleSizeW(30),
+    paddingLeft: scaleSizeW(50),
+    paddingRight: scaleSizeW(50),
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: scaleSizeW(30),
+    marginTop: scaleSizeW(30),
+  },
+  head: {
+    width: scaleSizeW(100),
+    height: scaleSizeW(100),
+    borderRadius: scaleSizeW(50),
+  },
+  btn: {
+    width: dpWidth - scaleSizeW(70),
+    lineHeight: scaleSizeH(100),
+    backgroundColor: 'rgb(33,150,243)',
+    borderRadius: scaleSizeW(30),
+    marginTop: scaleSizeH(30),
+  },
+  text: {
+    textAlign: 'center',
+    color: '#fff',
+    fontSize: setSpText(45),
+    lineHeight: scaleSizeH(100),
+  },
 });
 
-export default FavoritePage;
+const mapStateToProps = (state) => ({
+  loginState: state.loginState,
+});
+
+export default connect(mapStateToProps)(MyPage);

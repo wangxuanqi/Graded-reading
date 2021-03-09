@@ -6,18 +6,17 @@ import classification from './classification/index';
 import list from './classification/list';
 
 import clock from './clock';
-import Edit from './clock/EditScreen.js';
 
 import community from './community';
 import communityPublic from './community/publish';
-import communityDetail from './community/DetailPage';
 import bookDetail from './classification/detail';
 import bookRecord from './classification/record';
 import My from './my';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {createStackNavigator} from 'react-navigation-stack';
-import {Provider} from 'react-redux';
-import store from '../../store/store';
+
+import LoginPage from '../login';
+import RegisterPage from '../login/register';
 
 const MainPage = createStackNavigator({
   ClassificationPage: {
@@ -26,7 +25,7 @@ const MainPage = createStackNavigator({
   ListPage: {
     screen: list,
   },
-  DetailPage: {
+  BookDetailPage: {
     screen: bookDetail,
   },
   RecordPage: {
@@ -39,21 +38,11 @@ const MainPage = createStackNavigator({
 const ClockPage = createStackNavigator({
   ClockPage: {
     screen: clock,
-    navigationOptions: {
-      headerTitle: '打卡',
-      headerBackTitle: null,
-    },
-  },
-  EditPage: {
-    screen: Edit,
   },
 });
 const CommunityPage = createStackNavigator({
   FavoritePage: {
     screen: community,
-  },
-  DetailPage: {
-    screen: communityDetail,
   },
   PublicPage: {
     screen: communityPublic,
@@ -64,11 +53,17 @@ const MyPage = createStackNavigator({
   MyPage: {
     screen: My,
   },
+  LoginPage: {
+    screen: LoginPage,
+  },
+  RegisterPage: {
+    screen: RegisterPage,
+  },
 });
 
 const bottomTab = createBottomTabNavigator(
   {
-    Popular: {
+    ClassificationPage: {
       screen: MainPage,
       navigationOptions: {
         tabBarLabel: '分类',
@@ -94,7 +89,7 @@ const bottomTab = createBottomTabNavigator(
         ),
       },
     },
-    Favorite: {
+    CommunityPage: {
       screen: CommunityPage,
       navigationOptions: {
         tabBarLabel: '社区',
@@ -138,11 +133,7 @@ const bottomTab = createBottomTabNavigator(
 export default class HomePage extends Component {
   render() {
     const Tab = this.tabNavigator();
-    return (
-      <Provider store={store}>
-        <Tab />
-      </Provider>
-    );
+    return <Tab />;
   }
   tabNavigator() {
     return createAppContainer(bottomTab);

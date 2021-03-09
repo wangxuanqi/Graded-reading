@@ -1,12 +1,20 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, Image} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import {NetPost} from '../../utils/request';
 import EditView from '../../components/login/EditView';
 import LoginButton from '../../components/login/LoginButton';
-import LoginSuccess from '../../components/login/LoginSuccess';
 import storage from '../../store/storage';
+import {connect} from 'react-redux';
+import {setLoginState} from '../../actions/actions';
 
-export default class LoginActivity extends Component {
+class LoginActivity extends Component {
   constructor(props) {
     super(props);
     this.userName = '';
@@ -14,24 +22,15 @@ export default class LoginActivity extends Component {
   }
 
   componentDidMount() {
+    if (this.props.navigation.state.params) {
+      console.log(this.props.navigation.state.params.from);
+    }
     // load
     storage
       .load({
         key: 'loginState',
-
-        // autoSync (default: true) means if data is not found or has expired,
-        // then invoke the corresponding sync method
         autoSync: true,
-
-        // syncInBackground (default: true) means if data expired,
-        // return the outdated data first while invoking the sync method.
-        // If syncInBackground is set to false, and there is expired data,
-        // it will wait for the new data and return only after the sync completed.
-        // (This, of course, is slower)
         syncInBackground: true,
-
-        // you can pass extra params to the sync method
-        // see sync example below
         syncParams: {
           extraFetchOptions: {
             // blahblah
@@ -42,21 +41,77 @@ export default class LoginActivity extends Component {
       .then((ret) => {
         // found data go to then()
         console.log(ret);
+        NetPost(
+          '/auth/validate',
+          {},
+          {
+            headers: {
+              Authorization: 'Bearer ' + ret.token,
+            },
+          },
+        )
+          .then((res) => {
+            this.props.dispatch && this.props.dispatch(setLoginState(ret));
+            this.props.navigation.navigate('HomePage', {key: '传递的标题'});
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       })
       .catch((err) => {
-        // any exception including data not found
-        // goes to catch()
-        console.warn(err.message);
         switch (err.name) {
           case 'NotFoundError':
-            // TODO;
             break;
           case 'ExpiredError':
-            // TODO
             break;
         }
       });
   }
+
+  //跳转到第二个页面去
+  onLoginSuccess = (res) => {
+    this.props.dispatch && this.props.dispatch(setLoginState(res.data));
+    storage.save({
+      key: 'loginState', // Note: Do not use underscore("_") in key!
+      data: res.data,
+
+      // if expires not specified, the defaultExpires will be applied instead.
+      // if set to null, then it will never expire.
+      expires: 1000 * 3600,
+    });
+    if (
+      this.props.navigation.state.params &&
+      this.props.navigation.state.params.from
+    ) {
+      this.props.navigation.goBack();
+    } else {
+      this.props.navigation.navigate('HomePage', {});
+    }
+  };
+
+  onPressCallback = () => {
+    NetPost('/auth/login', {
+      password: this.password,
+      userName: this.userName,
+    })
+      .then((res) => {
+        console.log(res);
+        this.onLoginSuccess(res);
+      })
+      .catch((err) => {
+        console.log(
+          '🚀 ~ file: index.js ~ line 139 ~ LoginActivity ~ err',
+          JSON.stringify(err),
+        );
+        let errMsg = '';
+        if (err.response.status === 401) {
+          errMsg = err.response.data.message;
+        } else if (err.response.status === 400) {
+          errMsg = err.response.data.data[0].msg;
+        }
+        Alert.alert('登录失败', errMsg);
+      });
+  };
 
   render() {
     return (
@@ -73,7 +128,7 @@ export default class LoginActivity extends Component {
         </View>
         <View style={{marginTop: 80}}>
           <EditView
-            name="输入邮箱"
+            name="输入用户名"
             onChangeText={(text) => {
               this.userName = text;
             }}
@@ -83,47 +138,23 @@ export default class LoginActivity extends Component {
             onChangeText={(text) => {
               this.password = text;
             }}
+            secureTextEntry={true}
           />
           <LoginButton name="登录" onPressCallback={this.onPressCallback} />
-          <Text style={{color: '#4A90E2', textAlign: 'center', marginTop: 10}}>
-            忘记密码？
-          </Text>
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.navigate('RegisterPage', {
+                from: 'loginPage',
+              });
+            }}>
+            <Text
+              style={{color: '#4A90E2', textAlign: 'center', marginTop: 10}}>
+              注册
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     );
-  }
-
-  //跳转到第二个页面去
-  onLoginSuccess = (res) => {
-    storage.save({
-      key: 'loginState', // Note: Do not use underscore("_") in key!
-      data: res.data,
-
-      // if expires not specified, the defaultExpires will be applied instead.
-      // if set to null, then it will never expire.
-      expires: 1000 * 3600,
-    });
-    this.props.navigation.navigate('HomePage', {key: '传递的标题'});
-  };
-
-  onPressCallback = () => {
-    NetPost('/auth/login', {
-      password: this.password,
-      email: this.userName,
-    })
-      .then((res) => {
-        console.log(res);
-        this.onLoginSuccess(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-}
-
-class loginLineView extends Component {
-  render() {
-    return <Text>没有帐号</Text>;
   }
 }
 
@@ -134,3 +165,5 @@ const LoginStyles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
 });
+
+export default connect()(LoginActivity);

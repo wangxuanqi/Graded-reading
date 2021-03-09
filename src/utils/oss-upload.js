@@ -32,7 +32,7 @@ export const uploadOssFile = (filepath) => {
   return AliyunOSS.asyncUpload(bucketname, objectKey, filepath)
     .then(() => {
       console.log(`${urlCdn}${objectKey}`);
-      return `${urlCdn}${objectKey}`;
+      return {url: `${urlCdn}${objectKey}`};
     })
     .catch((error) => {
       console.log('=== error', error);

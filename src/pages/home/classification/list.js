@@ -53,9 +53,6 @@ export default class ListPage extends Component {
         console.log('storage', ret);
       })
       .catch((err) => {
-        // any exception including data not found
-        // goes to catch()
-        console.warn(err.message);
         switch (err.name) {
           case 'NotFoundError':
             this.getBook();
@@ -110,7 +107,7 @@ export default class ListPage extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#e5e6e7',
+    backgroundColor: '#f1f2f3',
   },
   content: {
     display: 'flex',

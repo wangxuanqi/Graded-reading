@@ -181,7 +181,7 @@ export default class DetailPage extends Component {
       <View style={styles.container}>
         <ImageBackground source={image} style={styles.image}>
           <View style={styles.header}>
-            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
               <ImageBackground
                 style={styles.btnBg}
                 source={require('../../../images/btn-bg.jpg')}
@@ -196,15 +196,12 @@ export default class DetailPage extends Component {
             <Text style={styles.headerTitle}>{title}</Text>
             <TouchableOpacity
               onPress={() => {
-                this.quit();
-                navigation.navigate('RecordPage', {
-                  title: title,
-                  pdfPath: pdfPath,
-                  isVisible: false,
-                  keys: {
-                    ...this.props.navigation.state.params.keys,
-                    detail_key: this.props.navigation.state.key,
-                  },
+                this.playPause();
+                navigation.navigate('PublicPage', {
+                  share: true,
+                  coverPath: navigation.state.params.coverPath,
+                  class: navigation.state.params.class,
+                  title: navigation.state.params.title,
                 });
               }}>
               <ImageBackground
@@ -212,7 +209,7 @@ export default class DetailPage extends Component {
                 source={require('../../../images/btn-bg.jpg')}
                 imageStyle={{borderRadius: scaleSizeW(50)}}>
                 <Ionicons
-                  name="mic"
+                  name="share-social"
                   size={scaleSizeW(60)}
                   style={{color: '#ffffff'}}
                 />
@@ -268,7 +265,7 @@ export default class DetailPage extends Component {
                 source={require('../../../images/btn-bg.jpg')}
                 imageStyle={{borderRadius: scaleSizeW(50)}}>
                 <Ionicons
-                  name={pause ? 'pause' : 'play'}
+                  name={!pause ? 'pause' : 'play'}
                   size={scaleSizeW(50)}
                   style={{color: '#ffffff'}}
                 />
@@ -282,6 +279,30 @@ export default class DetailPage extends Component {
                 <Ionicons
                   name="play-forward"
                   size={scaleSizeW(50)}
+                  style={{color: '#ffffff'}}
+                />
+              </ImageBackground>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                this.quit();
+                navigation.navigate('RecordPage', {
+                  title: title,
+                  pdfPath: pdfPath,
+                  isVisible: false,
+                  keys: {
+                    ...this.props.navigation.state.params.keys,
+                    detail_key: this.props.navigation.state.key,
+                  },
+                });
+              }}>
+              <ImageBackground
+                style={styles.btnBg}
+                source={require('../../../images/btn-bg.jpg')}
+                imageStyle={{borderRadius: scaleSizeW(50)}}>
+                <Ionicons
+                  name="mic"
+                  size={scaleSizeW(60)}
                   style={{color: '#ffffff'}}
                 />
               </ImageBackground>

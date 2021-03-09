@@ -1,42 +1,55 @@
 // reducers.js
+
 import {combineReducers} from 'redux';
-import {CHANGE_NAME} from '../actions/actionsTypes';
+import {
+  SET_LOGIN_STATE,
+  GET_ALL_MOMENTS,
+  INSERT_COMMENT,
+  THUMBS_UP_MOMENT,
+} from '../actions/actionsTypes';
 
-// 原始默认state
-const defaultState = {
-  userlist: [
-    {
-      id: '001',
-      name: '路人甲',
-      sex: '女',
-      age: 27,
-    },
-    {
-      id: '002',
-      name: '路人乙',
-      sex: '女',
-      age: 31,
-    },
-    {
-      id: '003',
-      name: '路人丙',
-      sex: '男',
-      age: 45,
-    },
-  ],
-};
-
-function user(state = defaultState.userlist, action) {
+function loginState(state = {}, action) {
   switch (action.type) {
-    case CHANGE_NAME:
-      return state.map((item) =>
-        item.id === action.id ? {...item, name: action.name} : item,
-      );
+    case SET_LOGIN_STATE:
+      return {...state, ...action.val};
     default:
       return state;
   }
 }
 
+function moment(state = {}, action) {
+  switch (action.type) {
+    case GET_ALL_MOMENTS:
+      return {...state, allMoments: action.val};
+    case INSERT_COMMENT:
+      return {
+        ...state,
+        allMoments: updateAllMoments(
+          state.allMoments,
+          action.val,
+          'commentUsers',
+        ),
+      };
+    case THUMBS_UP_MOMENT:
+      return {
+        ...state,
+        allMoments: updateAllMoments(state.allMoments, action.val, 'thumbsUp'),
+      };
+    default:
+      return state;
+  }
+}
+
+function updateAllMoments(allMoments, val, property) {
+  const index = allMoments.findIndex((item) => {
+    return item._id === val._id;
+  });
+
+  allMoments[index][property] = val[property];
+  return allMoments;
+}
+
 export default combineReducers({
-  user,
+  loginState,
+  moment,
 });

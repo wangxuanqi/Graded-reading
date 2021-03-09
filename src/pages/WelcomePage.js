@@ -10,7 +10,7 @@ export default class WelcomePage extends Component {
           style={styles.imgage}
           source={{
             uri:
-              'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1570022899&di=6b8c13ab3d88c10f8ae8810c4832664f&imgtype=jpg&er=1&src=http%3A%2F%2Fpic1.win4000.com%2Fwallpaper%2F2018-11-01%2F5bda950348bf6.jpg',
+              'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fbpic.588ku.com%2Felement_origin_min_pic%2F17%2F05%2F07%2Faa15add71843929eb6931f10d5836ad2.jpg%21%2Ffwfh%2F804x804%2Fquality%2F90%2Funsharp%2Ftrue%2Fcompress%2Ftrue&refer=http%3A%2F%2Fbpic.588ku.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1617875589&t=6cf122912695481ec47f7ce675a45607',
           }}
         />
       </View>

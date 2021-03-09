@@ -7,15 +7,19 @@ export default class EditView extends Component {
   }
 
   render() {
+    const {name, secureTextEntry, onChangeText, value} = this.props;
+
     return (
       <View style={LoginStyles.TextInputView}>
         <TextInput
           style={LoginStyles.TextInput}
-          placeholder={this.props.name}
+          placeholder={name}
           onChangeText={(text) => {
             this.setState({text});
-            this.props.onChangeText(text);
+            onChangeText(text);
           }}
+          secureTextEntry={secureTextEntry}
+          value={value}
         />
       </View>
     );
