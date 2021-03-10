@@ -5,7 +5,8 @@ import {scaleSizeH, scaleSizeW, setSpText} from '../../../utils/screen';
 import {StackOptions} from '../../../utils/navigation';
 import MomentItem from '../../../components/common/moment';
 import {connect} from 'react-redux';
-import {getAllMoments, thumbsUpMoment} from '../../../actions/actions';
+import {getAllMoments} from '../../../actions/actions';
+import RefreshListView, {RefreshState} from 'react-native-refresh-list-view';
 
 class CommunityPage extends Component {
   //设置顶部导航栏的内容
@@ -36,6 +37,10 @@ class CommunityPage extends Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      refreshState: RefreshState.Idle,
+    };
   }
 
   componentDidMount() {
@@ -43,13 +48,53 @@ class CommunityPage extends Component {
     this.props.getAllMoments(loginState.token);
   }
 
+  keyExtractor = (item, index) => {
+    return index.toString();
+  };
+
+  onHeaderRefresh = () => {
+    const {loginState} = this.props;
+    this.setState({refreshState: RefreshState.HeaderRefreshing});
+
+    this.props.getAllMoments(loginState.token);
+
+    this.setState({
+      refreshState: RefreshState.Idle,
+    });
+  };
+
+  renderMoment = (info) => {
+    const {loginState, navigation} = this.props;
+
+    return (
+      <MomentItem
+        item={info.item}
+        loginState={loginState}
+        thumbsUpCount={info.item.thumbsUp.length}
+        navigation={navigation}
+      />
+    );
+  };
+
   render() {
     const {moment, loginState, navigation} = this.props;
     const allMomentsArr = moment.allMoments ? moment.allMoments : [];
 
     return (
       <View style={styles.container}>
-        <ScrollView style={{flex: 1}}>
+        <RefreshListView
+          data={allMomentsArr}
+          keyExtractor={this.keyExtractor}
+          renderItem={this.renderMoment}
+          refreshState={this.state.refreshState}
+          onHeaderRefresh={this.onHeaderRefresh}
+          // 可选
+          footerRefreshingText="玩命加载中 >.<"
+          footerFailureText="我擦嘞，居然失败了 =.=!"
+          footerNoMoreDataText="-我是有底线的-"
+          footerEmptyDataText="-好像什么东西都没有-"
+        />
+        {/* <ScrollView style={{flex: 1}}>
           {allMomentsArr.map((item, index) => (
             <MomentItem
               item={item}
@@ -59,7 +104,7 @@ class CommunityPage extends Component {
               navigation={navigation}
             />
           ))}
-        </ScrollView>
+        </ScrollView> */}
       </View>
     );
   }

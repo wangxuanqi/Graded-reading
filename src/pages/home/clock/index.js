@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import {scaleSizeH, scaleSizeW, setSpText} from '../../../utils/screen';
 import {connect} from 'react-redux';
+import {getClockInfo} from '../../../actions/actions';
+import moment from 'moment';
 
 class ClockScreen extends React.Component {
   //设置顶部导航栏的内容
@@ -25,24 +27,41 @@ class ClockScreen extends React.Component {
     headerTitleStyle: styles.headerTitleStyle,
   });
 
+  componentDidMount() {
+    const {loginState, getClockInfoMap} = this.props;
+    getClockInfoMap(loginState.token);
+  }
+
   render() {
+    const {clockInfo} = this.props;
+    const hadClocked = !moment(
+      moment(clockInfo.clock.clockTime).format('YYYY-MM-DD'),
+    ).isBefore(moment().format('YYYY-MM-DD'));
+
     return (
       <View style={styles.container}>
         <View style={styles.boxContainer}>
           <View style={styles.boxTop}>
             <View style={{width: scaleSizeW(120)}}>
               <Text style={styles.tabText}>已学单词</Text>
-              <Text style={styles.numText}>40</Text>
+              <Text style={styles.numText}>{clockInfo.clock.learnedWord}</Text>
             </View>
             <View style={styles.line} />
             <View style={{width: scaleSizeW(120)}}>
               <Text style={styles.tabText}>打卡天数</Text>
-              <Text style={styles.numText}>3</Text>
+              <Text style={styles.numText}>{clockInfo.clock.clockedDay}</Text>
             </View>
           </View>
           <View style={styles.boxBottom}>
-            <TouchableOpacity style={styles.btn}>
-              <Text style={styles.btnText}>开始学习</Text>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => {
+                this.props.navigation.navigate('WordPage', {});
+              }}
+              disabled={hadClocked}>
+              <Text style={styles.btnText}>
+                {hadClocked ? '今日已打卡' : '开始学习'}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -113,4 +132,14 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ClockScreen;
+const mapStateToProps = (state) => ({
+  clockInfo: state.clockInfo,
+  loginState: state.loginState,
+});
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getClockInfoMap: (token) => dispatch(getClockInfo(token)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ClockScreen);

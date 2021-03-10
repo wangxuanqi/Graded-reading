@@ -6,6 +6,7 @@ import classification from './classification/index';
 import list from './classification/list';
 
 import clock from './clock';
+import word from './clock/word';
 
 import community from './community';
 import communityPublic from './community/publish';
@@ -38,6 +39,9 @@ const MainPage = createStackNavigator({
 const ClockPage = createStackNavigator({
   ClockPage: {
     screen: clock,
+  },
+  WordPage: {
+    screen: word,
   },
 });
 const CommunityPage = createStackNavigator({

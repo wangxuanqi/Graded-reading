@@ -6,6 +6,7 @@ import {
   GET_ALL_MOMENTS,
   INSERT_COMMENT,
   THUMBS_UP_MOMENT,
+  GET_CLOCK_INFO,
 } from '../actions/actionsTypes';
 
 function loginState(state = {}, action) {
@@ -49,7 +50,20 @@ function updateAllMoments(allMoments, val, property) {
   return allMoments;
 }
 
+const preClockState = {
+  clock: {learnedWord: 0, clockedDay: 0, clockTime: new Date()},
+};
+function clockInfo(state = preClockState, action) {
+  switch (action.type) {
+    case GET_CLOCK_INFO:
+      return {...state, clock: action.val};
+    default:
+      return state;
+  }
+}
+
 export default combineReducers({
   loginState,
   moment,
+  clockInfo,
 });

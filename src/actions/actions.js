@@ -4,8 +4,9 @@ import {
   GET_ALL_MOMENTS,
   INSERT_COMMENT,
   THUMBS_UP_MOMENT,
+  GET_CLOCK_INFO,
 } from './actionsTypes';
-import {NetGet} from '../utils/request';
+import {NetGet, NetPost} from '../utils/request';
 
 const setLoginState = (val) => ({
   type: SET_LOGIN_STATE,
@@ -20,7 +21,7 @@ const getAllMoments = (token) => {
       },
     })
       .then((res) => {
-        dispatch(fetchingData(res.data));
+        dispatch(fetchingMomentData(res.data));
       })
       .catch((err) => {
         console.log(err);
@@ -28,9 +29,53 @@ const getAllMoments = (token) => {
   };
 };
 
-const fetchingData = (val) => {
+const getClockInfo = (token) => {
+  return (dispatch) => {
+    NetGet('/clock', {
+      headers: {
+        Authorization: 'Bearer ' + token,
+      },
+    })
+      .then((res) => {
+        dispatch(fetchingClockData(res.data));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+};
+
+const updateClockInfo = (token, param) => {
+  console.log(param);
+  return (dispatch) => {
+    NetPost(
+      '/clock',
+      {...param},
+      {
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      },
+    )
+      .then((res) => {
+        dispatch(fetchingClockData(res.data));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+};
+
+const fetchingMomentData = (val) => {
   return {
     type: GET_ALL_MOMENTS,
+    val,
+  };
+};
+
+const fetchingClockData = (val) => {
+  return {
+    type: GET_CLOCK_INFO,
     val,
   };
 };
@@ -49,4 +94,11 @@ const thumbsUpMoment = (val) => {
   };
 };
 
-export {setLoginState, getAllMoments, insertComment, thumbsUpMoment};
+export {
+  setLoginState,
+  getAllMoments,
+  insertComment,
+  thumbsUpMoment,
+  getClockInfo,
+  updateClockInfo,
+};

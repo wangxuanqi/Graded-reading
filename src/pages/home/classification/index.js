@@ -159,7 +159,8 @@ const styles = StyleSheet.create({
   boxContainer: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'center',
+    //justifyContent: 'center',
+    paddingLeft: scaleSizeW(8),
     flexWrap: 'wrap',
     width: dpWidth,
   },

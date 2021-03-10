@@ -12,7 +12,7 @@ const StackOptions = (
   let {state, goBack} = navigation;
 
   //用来判断是否隐藏或显示header;
-  const visible = state.params.isVisible;
+  const visible = state.params.isVisible || true;
   let headerShown;
   if (visible === false) {
     headerShown = false;
