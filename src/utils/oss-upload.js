@@ -13,8 +13,8 @@ const urlCdn = 'https://graded-reading.oss-cn-shenzhen.aliyuncs.com/';
 
 //根据AliyunOss配置AccessKey
 AliyunOSS.initWithPlainTextAccessKey(
-  'LTAI4GB46Jpeom31qLo2c3FM',
-  'GmbMzj6CqB5MKwCaqGJbAjNG7EZDJj',
+  '#oss-key',
+  '#oss-secret',
   endPoint,
   configuration,
 );
